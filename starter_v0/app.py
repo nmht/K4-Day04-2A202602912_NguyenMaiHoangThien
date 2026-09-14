@@ -6,8 +6,8 @@ import sys
 sys.path.append(str(Path(__file__).parent))
 
 from chat import run_model_tool_loop, trim_history
-from providers.factory import make_provider
-from utils import load_tool_declarations, to_openai_tools
+from providers import make_provider
+from tools import load_tool_declarations, to_openai_tools
 
 st.set_page_config(page_title="IT Helpdesk Agent", page_icon="🤖")
 
