@@ -16,8 +16,6 @@
 
 > URL: (Chưa có)
 
-
-
 ## A2. Tool agent có
 
 | Tool                     | Chức năng                   | Core / optional / team-built |
@@ -66,8 +64,6 @@ total_cases`, và tool result error đã được review thủ công.
 | M05\_ticket\_confirmation   | wrong\_boundary | \[] (Không gọi)         | Model viết câu hỏi xin phép vào trường `reply` của JSON thay vì dùng Tool. | Cảnh báo gay gắt trong prompt: CẤM TỰ Ý ĐẶT CÂU HỎI TRONG JSON, PHẢI DÙNG TOOL. |
 | H19\_ambiguous\_environment | missing\_info   | check\_service\_status  | User nói "demo", model tự chẩn đoán thay vì hỏi.                           | Thêm luật không được đoán Enum, bắt buộc gọi `clarify(choice)`.                 |
 |                             |                 |                         |                                                                            |                                                                                 |
-
-
 
 ## B3. Team eval cases
 
@@ -164,13 +160,13 @@ evidence thực tế trong repository, không chỉ mô tả cảm nhận chung.
 
 ### Nguyễn Tiến Đạt — 2A202602606
 
-- **Vai trò/phần việc được nhận:** Phụ trách xử lý lỗi kỹ thuật nền tảng (Platform & Tool bugs).
-- **Những gì tôi đã thay đổi trong repo chung:** Khắc phục lỗi Rate Limit của Gemini API bằng cách chỉnh sửa code trong provider. Sửa chữa schema của `tools.yaml` để khớp với logic check của bài lab.
+- **Vai trò/phần việc được nhận:** Phụ trách xử lý lỗi kỹ thuật nền tảng, tích hợp Provider API, và chuẩn hóa Tool Schema.
+- **Những gì tôi đã thay đổi trong repo chung:** Khắc phục triệt để lỗi Rate Limit (HTTP 429) của Gemini API và sửa chữa lỗi cấu trúc (schema validation) trong định nghĩa tools để khớp với logic check của bài lab.
 - **File hoặc artifact liên quan:** `gemini_provider.py`, `tools.yaml`.
 - **Commit hash hoặc pull request:** (Đợi push lên github)
 - **Một quyết định kỹ thuật tôi đã đưa ra và lý do:** Đưa `time.sleep(4)` trực tiếp vào hàm `generate_content` thay vì sửa file `run_eval.py`. Lý do: Tránh vi phạm quy định không được sửa logic core test của giảng viên.
-- **Khó khăn tôi gặp và cách tôi xử lý:** Ban đầu không rõ tại sao 8/30 test cases bị provider\_error dù code không sai. Sau khi đọc log kỹ thuật, tôi nhận ra API free của Gemini bị giới hạn 15 rpm nên đã chèn delay.
-- **Điều tôi học được từ phần việc này:** Khả năng debug các hệ thống kết nối API external và hiểu rõ hơn về cách config tham số cho Tool/Function call (`required` params).
+- **Khó khăn tôi gặp và cách tôi xử lý:** Ban đầu 8/30 test cases bị fail với lỗi provider\_error một cách ngẫu nhiên dù code logic không sai. Sau khi tra cứu log kỹ thuật, nhận ra API free bị giới hạn 15 Request/Phút nên đã triển khai cơ chế delay/retry.
+- **Điều tôi học được từ phần việc này:** Nâng cao kỹ năng debug các hệ thống gọi API bên ngoài, xử lý lỗi cascading và hiểu rất sâu về cách cấu hình tham số bắt buộc (required params) cho Function Calling.
 - **Nếu làm lại, tôi sẽ cải thiện điều gì:** Tôi sẽ thiết kế một Decorator Retry tự động cho Provider thay vì phải dùng sleep cứng.
 
 Mỗi thành viên phải tự commit phần self-reflection của mình bằng Git identity
