@@ -3,7 +3,7 @@
 ## Team
 
 - Team: 2A202602912\_NguyenMaiHoangThien
-- Members: Nguyễn Tiến Đạt
+- Members: Nguyễn Tiến Đạt - 2A202602606
 - Provider/model: Gemini / gemini-3.1-flash-lite
 
 # PHẦN A — Giới thiệu agent
@@ -154,9 +154,7 @@ evidence thực tế trong repository, không chỉ mô tả cảm nhận chung.
 
 **Reflection chung của nhóm:**
 
-> Nhóm đã hoàn thành trọn vẹn mục tiêu đạt 100% độ chính xác cho toàn bộ 30 baseline cases. Thay đổi tạo ra sự cải thiện mạnh mẽ nhất là việc phát hiện ra lỗi "Tool Hallucination" khi model dùng JSON Text thay vì gọi API thực sự (ở case M05 và M09). Nhóm đã bổ sung cảnh báo gắt gao trong prompt để chấn chỉnh model, đồng thời xử lý triệt để được Rate limit 429 của Gemini.
-> Phân công: Nhóm đã chia nhau làm việc cực kỳ hiệu quả, người chuyên lo system prompt, người viết eval cases và người xử lý lỗi code platform (rate limit).
-> Nếu có thêm thời gian, nhóm sẽ tập trung vào việc cho Agent xử lý các cuộc hội thoại "cù nhầy" hơn hoặc test thêm adversarial data.
+> Nhóm đã hoàn thiện tool contract, prompt routing, team eval và UI dùng chung `run_model_tool_loop`. Evidence mạnh nhất là Base run v3 với 30/30 case được đo, 0 provider error và 28/30 pass. Hai lỗi còn lại của run đó đã được xử lý riêng: environment mơ hồ được chuyển sang lựa chọn `production/staging`, còn payload ticket thay đổi bắt buộc gọi lại `clarify`; M09 đã pass ở focused run v5. Các suite Group, Extension và Adversarial vẫn cần chạy lại với quota ổn định trước khi dùng làm evidence cuối cùng. Xem `artifacts/system_prompt.md`, `artifacts/tools.yaml`, `data/eval_group.json` và thư mục `runs/`.
 
 ## C2. Self-reflection của từng thành viên
 
