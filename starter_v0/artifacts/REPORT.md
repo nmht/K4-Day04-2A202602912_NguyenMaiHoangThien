@@ -2,15 +2,13 @@
 
 ## Team
 
-- Team:
+- T&#x20;eam:
 - Members:
 - Provider/model:
 
 # PHẦN A — Giới thiệu agent
 
-## A1. Agent này làm được gì
-
-> Viết 1–2 câu mô tả capability và giới hạn của agent.
+Agent IT Helpdesk hỗ trợ tra cứu thông tin (Knowledge Base, chính sách), kiểm tra trạng thái dịch vụ, chẩn đoán thiết bị, cấp phát phần cứng và tự động tạo ticket sau khi người dùng xác nhận. Tuy nhiên, agent bị giới hạn nghiêm ngặt ở việc không tự đoán định danh (asset ID/employee ID), không thực hiện các hành vi ngoài phạm vi IT, và không rò rỉ dữ liệu nhạy cảm của hệ thống nội bộ.
 
 **Link dùng thử:**
 
@@ -179,10 +177,12 @@ repository chung:
 - Mỗi thành viên có ít nhất một commit trong lịch sử branch nộp bài.
 - Phần reflection chung của nhóm đã hoàn thành và có evidence.
 - Mỗi thành viên đã tự viết và commit self-reflection của mình.
-- `system_prompt.md`, `tools.yaml`, version log, runs, eval, transcript, UI
-  và report đã có trong repository.
-- Không có `.env`, API key, token, dữ liệu thật, cache hoặc generated ticket.
-- Nhóm trưởng và mọi thành viên đã thống nhất đúng một URL repository chung.
+- `system_prompt.md`, `tools.yaml`, versioọi thành viên đã thống nhất đúng một URL repository chung.
+- Nhóm trưởng và mọi thành viên sẽ nộp cùng URL đó trên VLearn.
+
+**URL repository chung dùng để nộp:**
+
+: https\://github.com/nmht/K4-Day04-2A202602912\_NguyenMaiHoangThien.githien)#x20;ọi thành viên đã thống nhất đúng một URL repository chung.
 - Nhóm trưởng và mọi thành viên sẽ nộp cùng URL đó trên VLearn.
 
 **URL repository chung dùng để nộp:**
