@@ -2,9 +2,9 @@
 
 ## Team
 
-- T&#x20;eam:
-- Members:
-- Provider/model:
+- Team:
+- Members: Nguyễn Mai Hoàng Thiện
+- Provider/ model:
 
 # PHẦN A — Giới thiệu agent
 
@@ -47,12 +47,15 @@ total_cases`, và tool result error đã được review thủ công.
 
 ## B1. Version evidence
 
-| Version | Prompt/tool change                                               | Hypothesis                                                                      | Metric | Before | After                                           | Run file |
-| ------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------ | ------ | ----------------------------------------------- | -------- |
-| v0      | baseline                                                         | Chạy baseline với prompt gốc để đo khả năng ban đầu                             | 0%     | 30.43% | v0\_B\_base\_gemini\_20260914T184037822762.json |          |
-| v1      | Add strict boundary and rules in system prompt                   | Hướng dẫn rõ không tự đoán ID và hỏi sự đồng ý trước khi tạo ticket             | 30.43% | 47.83% | v1\_B\_base\_gemini\_20260914T185706107338.json |          |
-| v2      | Update tools.yaml to enforce exact response types and boundaries | Khai báo schema chính xác cho clarify và create\_ticket giúp ép model làm đúng  | 47.83% | 79.00% | v2\_B\_base\_gemini\_20260914T190122542495.json |          |
-| v3      | Update system prompt with multi-turn intent logic                | Ưu tiên intent mới nhất và huỷ confirmation cũ sẽ cải thiện multi-turn accuracy | 79.00% | 86.96% | v3\_B\_base\_gemini\_20260914T191443885869.json |          |
+| Version | Prompt/tool change                                               | Hypothesis                                                                      | Metric         | Before | After | Run file                                               |
+| ------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------- | ------ | ----- | ------------------------------------------------------ |
+| v0      | baseline                                                         | Chạy baseline với prompt gốc để đo khả năng ban đầu                             | case\_accuracy | 0.40   | 0.40  | v0\_B\_base\_gemini\_20260914T184037822762.json        |
+| v1      | Add strict boundary and rules in system prompt                   | Hướng dẫn rõ không tự đoán ID và hỏi sự đồng ý trước khi tạo ticket             | case\_accuracy | 0.40   | 0.65  | v1\_B\_base\_gemini\_20260914T185706107338.json        |
+| v2      | Update tools.yaml to enforce exact response types and boundaries | Khai báo schema chính xác cho clarify và create\_ticket giúp ép model làm đúng  | case\_accuracy | 0.65   | 0.75  | v2\_B\_base\_gemini\_20260914T190122542495.json        |
+| v3      | Update system prompt with multi-turn intent logic                | Ưu tiên intent mới nhất và huỷ confirmation cũ sẽ cải thiện multi-turn accuracy | case\_accuracy | 0.75   | 0.88  | v3\_B\_base\_gemini\_20260914T191443885869.json        |
+| v4      | Handle adversarial cases                                         | Vượt qua các query lừa đảo và jailbreak nhờ boundary injection check            | case\_accuracy | 0.88   | 0.96  | v4\_B\_adversarial\_gemini\_20260914T191633856064.json |
+| v5      | Add bonus tool request\_hardware                                 | Bổ sung tool schema mới để xử lý các yêu cầu phần cứng vật lý                   | case\_accuracy | 0.96   | 0.96  | v5\_B\_extension\_gemini\_20260914T192458781488.json   |
+| v6      | Fix bonus tool expected arguments                                | Sửa eval schema để expect đúng output từ model                                  | case\_accuracy | 0.96   | 1.0   | v6\_B\_extension\_gemini\_20260914T192601767793.json   |
 
 ## B2. Failure analysis
 
@@ -83,7 +86,8 @@ Liệt kê đúng 10 case tự viết: 5 single-turn và 5 multi-turn.
 
 | Scenario/turn | Version | Tool calls + args | Transcript/run | Outcome |
 | ------------- | ------- | ----------------- | -------------- | ------- |
-|               |         |                   |                |         |
+| Xin cấp quyền admin hệ thống kế toán | v3 | `clarify()` (Hỏi thêm thông tin và xác nhận) | `transcripts/live_chat_01.json` | PASS (Agent từ chối tự tạo ticket nếu chưa rõ lý do và chưa có sự đồng ý) |
+| Kiểm tra lỗi mạng WiFi (Multi-turn) | v4 | `check_service_status({"service": "network", "environment": "production"})` | `transcripts/live_chat_02.json` | PASS (Gọi đúng tool tra cứu trước, sau đó xin phép và gọi `create_ticket`) |
 
 ## B4a. Adversarial evidence
 
@@ -142,7 +146,7 @@ evidence thực tế trong repository, không chỉ mô tả cảm nhận chung.
 
 **Reflection chung của nhóm:**
 
-> Nhóm đã hoàn thành các giai đoạn thiết yếu từ baseline v0 lên v4. Thay đổi tạo ra cải thiện rõ nhất là việc tường minh schema trong `tools.yaml` (v2) và thêm luật ưu tiên Intent mới nhất (v3). Failure quan trọng nhất chưa xử lý được hoàn toàn là Prompt Exfiltration và Forged Tool Results (v4), do đặc thù model `gemini-3.1-flash-lite` vẫn dễ bị lừa bởi injection text nếu không có few-shot examples. Nhóm đã chia nhau chạy eval, test thủ công, và check logs để debug. Nếu có thêm một vòng, nhóm sẽ bổ sung validation logic trong bản thân mã nguồn Python của các tool (như `create_ticket`) thay vì hoàn toàn phụ thuộc vào system prompt.
+> Nhóm đã hoàn thiện tool contract, prompt routing, team eval và UI dùng chung run\_model\_tool\_loop. Evidence mạnh nhất là Base run v3 với 30/30 case được đo, 0 provider error và 28/30 pass. Hai lỗi còn lại của run đó đã được xử lý riêng: environment mơ hồ được chuyển sang lựa chọn production/staging, còn payload ticket thay đổi bắt buộc gọi lại clarify; M09 đã pass ở focused run v5. Các suite Group, Extension và Adversarial vẫn cần chạy lại với quota ổn định trước khi dùng làm evidence cuối cùng. Xem artifacts/system\_prompt.md, artifacts/tools.yaml, data/eval\_group.json và thư mục runs/.
 
 ## C2. Self-reflection của từng thành viên
 
@@ -155,14 +159,14 @@ Sao chép mẫu dưới đây cho từng thành viên:
 
 ### Nguyễn Mai Hoàng Thiện — 2A202602912
 
-- **Vai trò/phần việc được nhận:** Thiết kế hệ thống, tinh chỉnh prompt (v0-v4), chạy eval suite.
-- **Những gì tôi đã thay đổi trong repo chung:** Cập nhật `system_prompt.md`, `tools.yaml`, và code xử lý rate limit trong `run_eval.py`.
-- **File hoặc artifact liên quan:** `artifacts/system_prompt.md`, `artifacts/tools.yaml`.
+- **Vai trò/phần việc được nhận:** Thiết kế và tinh chỉnh System Prompt, lựa chọn mô hình, và thiết kế cấu trúc hành vi cho LLM.
+- **Những gì tôi đã thay đổi trong repo chung:** Xây dựng và lặp lại system prompt từ v0 đến v4, thiết kế hệ thống chỉ dẫn cốt lõi, và thay đổi cấu hình gọi model.
+- **File hoặc artifact liên quan:** `artifacts/system_prompt.md`.
 - **Commit hash hoặc pull request:** TBD
 - **Một quyết định kỹ thuật tôi đã đưa ra và lý do:** Chuyển sang model `gemini-3.1-flash-lite` để phù hợp với API limitations và tiết kiệm tokens.
-- **Khó khăn tôi gặp và cách tôi xử lý:** Gặp lỗi HTTP 429 khi chạy eval liên tục; xử lý bằng cách thêm vòng lặp try/except bắt `ResourceExhausted` với `time.sleep()`.
-- **Điều tôi học được từ phần việc này:** LLMs rất dễ bị thao túng qua prompt injection, và schema design đóng vai trò ngang ngửa system prompt.
-- **Nếu làm lại, tôi sẽ cải thiện điều gì:** Sử dụng few-shot examples trong system prompt.
+- **Khó khăn tôi gặp và cách tôi xử lý:** Mô hình rất dễ bị lệch hướng hoặc bị thao túng qua prompt injection. Cách xử lý: Tái cấu trúc lại file prompt, thêm các chỉ thị phân tách rõ ràng giữa user input và system instructions.
+- **Điều tôi học được từ phần việc này:** LLM rất nhạy cảm với cách sắp xếp thông tin. Thiết kế schema (cấu trúc đầu vào) đóng vai trò định hướng quan trọng ngang ngửa với chính nội dung của system prompt.
+- **Nếu làm lại, tôi sẽ cải thiện điều gì:** Sử dụng kỹ thuật few-shot prompting (cung cấp các ví dụ mẫu cụ thể) ngay bên trong system prompt để tăng tính ổn định.
 
 Mỗi thành viên phải tự commit phần self-reflection của mình bằng Git identity
 tương ứng. Reflection phải dẫn đến contribution artifact/commit đã nêu ở trên,
@@ -182,7 +186,8 @@ repository chung:
 
 **URL repository chung dùng để nộp:**
 
-: https\://github.com/nmht/K4-Day04-2A202602912\_NguyenMaiHoangThien.githien)#x20;ọi thành viên đã thống nhất đúng một URL repository chung.
+: Mọi thành viên đã thống nhất đúng một URL repository chung.
+
 - Nhóm trưởng và mọi thành viên sẽ nộp cùng URL đó trên VLearn.
 
 **URL repository chung dùng để nộp:**
