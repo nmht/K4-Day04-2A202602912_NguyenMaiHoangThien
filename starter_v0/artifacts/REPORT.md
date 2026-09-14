@@ -16,6 +16,8 @@
 
 > URL: (Chưa có)
 
+
+
 ## A2. Tool agent có
 
 | Tool                     | Chức năng                   | Core / optional / team-built |
@@ -51,10 +53,10 @@ total_cases`, và tool result error đã được review thủ công.
 
 | Version | Prompt/tool change                                                                  | Hypothesis                                                            | Metric   | Before | After  | Run file                                        |
 | ------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------- | -------- | ------ | ------ | ----------------------------------------------- |
-| v0      | baseline                                                                            | Chạy thử baseline với prompt gốc                                      | Accuracy | 0      | 0.8571 | v0\_B\_base\_gemini\_...json                    |
-| v1      | Thêm Required Params trong `tools.yaml` & Thêm luật xin phép vào `system_prompt.md` | Model thiếu tham số bắt buộc hoặc tự ý ghi dữ liệu                    | Accuracy | 0.8571 | 0.8966 | v1\_B\_base\_gemini\_20260914T185003255537.json |
-| v2      | Bổ sung luật xử lý Multi-turn và cấm đoán Enum                                      | Lỗi multi-turn do model bị dính intent cũ                             | Accuracy | 0.8966 | 0.9310 | v2\_B\_base\_gemini\_20260914T190924478100.json |
-| v3      | Ràng buộc Function Call + Thêm Rate Limit 4s vào gemini\_provider                   | Model bị Tool Hallucination (ghi lệnh vào JSON) và lỗi Rate limit 429 | Accuracy | 0.9310 | 1.0000 | v3\_B\_base\_gemini\_20260914T193306303797.json |
+| v0      | baseline                                                                            | Chạy thử baseline với prompt gốc                                      | Accuracy | 0      | 0.7647 | v0\_B\_base\_gemini\_...json                    |
+| v1      | Thêm Required Params trong `tools.yaml` & Thêm luật xin phép vào `system_prompt.md` | Model thiếu tham số bắt buộc hoặc tự ý ghi dữ liệu                    | Accuracy | 0.7647 | 0.8571 | v1\_B\_base\_gemini\_20260914T185003255537.json |
+| v2      | Bổ sung luật xử lý Multi-turn và cấm đoán Enum                                      | Lỗi multi-turn do model bị dính intent cũ                             | Accuracy | 0.8571 | 0.8966 | v2\_B\_base\_gemini\_20260914T190924478100.json |
+| v3      | Ràng buộc Function Call + Thêm Rate Limit 4s vào gemini\_provider                   | Model bị Tool Hallucination (ghi lệnh vào JSON) và lỗi Rate limit 429 | Accuracy | 0.8966 | 0.9310 | v3\_B\_base\_gemini\_20260914T193306303797.json |
 
 ## B2. Failure analysis
 
@@ -190,4 +192,4 @@ repository chung:
 
 **URL repository chung dùng để nộp:**
 
-> URL: https\://github.com/nmht/K4-Day04-2A202602912\_NguyenMaiHoangThien
+> URL: <https://github.com/nmht/K4-Day04-2A202602912_NguyenMaiHoangThien>
