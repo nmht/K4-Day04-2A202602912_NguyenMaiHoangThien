@@ -13,9 +13,9 @@ tools:
       type: object
       properties:
         question: {type: string, default: "", description: "Câu hỏi"}
-        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Kiểu trả lời"}
+        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Kiểu trả lời (bắt buộc)"}
         options: {type: array, default: [], items: {type: string}, description: "Các lựa chọn"}
-      required: [question]
+      required: [question, response_type]
 
   - name: search_kb
     description: "Tìm hướng dẫn hỗ trợ kỹ thuật."
@@ -23,9 +23,9 @@ tools:
       type: object
       properties:
         query: {type: string, default: "", description: "Nội dung cần tìm"}
-        category: {type: string, enum: [all, vpn, email, wifi, printing, account, security, hardware, software, meeting_room], default: "all", description: "Nhóm hướng dẫn"}
+        category: {type: string, enum: [all, vpn, email, wifi, printing, account, security, hardware, software, meeting_room], default: "all", description: "Nhóm hướng dẫn. Phải chọn nhóm phù hợp nhất."}
         top_k: {type: integer, default: 3, description: "Số kết quả"}
-      required: [query]
+      required: [query, category]
 
   - name: check_service_status
     description: "Kiểm tra trạng thái một dịch vụ."

@@ -1,7 +1,300 @@
 {
   "dataset_id": "day04_v3_helpdesk_group",
   "dataset_role": "group",
-  "description": "Template intentionally left empty. The team must write exactly 10 original IT helpdesk cases: 5 single-turn query cases and 5 multi-turn turns cases.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "10 original IT helpdesk cases: 5 single-turn, 5 multi-turn.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "G01_status_wifi_staging",
+      "phase": "B",
+      "suite": "group",
+      "query": "Hệ thống wifi ở môi trường staging có đang gặp lỗi không?",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_service_status",
+            "args": {
+              "service": "wifi",
+              "environment": "staging"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "environment_arg",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "G02_missing_asset_hardware",
+      "phase": "B",
+      "suite": "group",
+      "query": "Máy tính của mình tự nhiên bị sập nguồn, kiểm tra phần cứng xem sao.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "clarify_asset",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "G03_triage_vpn_and_user",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm bài viết về lỗi vpn và tra cứu thông tin nhân viên EMP-505 giúp mình.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "search_kb",
+            "args": {
+              "category": "vpn"
+            }
+          },
+          {
+            "name": "lookup_user",
+            "args": {
+              "employee_id": "EMP-505"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "parallel_tools",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "G04_confirm_before_format",
+      "phase": "B",
+      "suite": "group",
+      "query": "Mình đã kiểm tra LT-111, bị lỗi phần cứng. Viết giùm báo cáo bàn giao (handoff) tên là 'Lỗi LT-111'.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "format_incident_report",
+            "args": {
+              "template": "handoff",
+              "incident_title": "Lỗi LT-111"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "format_report",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "G05_out_of_scope_hr",
+      "phase": "B",
+      "suite": "group",
+      "query": "Cho mình xin quy trình nghỉ phép năm của công ty.",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "metadata": {
+        "skill": "out_of_scope",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "G06_multiturn_correct_service",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Check dịch vụ email production."
+        },
+        {
+          "role": "user",
+          "content": "À nhầm, vpn production."
+        },
+        {
+          "role": "user",
+          "content": "Kiểm tra đi."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_service_status",
+            "args": {
+              "service": "vpn",
+              "environment": "production"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_correction",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "G07_multiturn_ticket_creation",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tạo ticket lỗi máy in."
+        },
+        {
+          "role": "user",
+          "content": "Mức priority là low."
+        },
+        {
+          "role": "user",
+          "content": "Xin xác nhận để tạo."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_confirmation",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "G08_multiturn_change_intent",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm hướng dẫn cài email."
+        },
+        {
+          "role": "user",
+          "content": "Thôi khỏi tìm bài nữa, kiểm tra tài khoản EMP-105 giúp."
+        },
+        {
+          "role": "user",
+          "content": "Làm ngay đi."
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup_user",
+            "args": {
+              "employee_id": "EMP-105"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "latest_intent_wins",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "G09_multiturn_clarify_asset",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Kiểm tra mạng trên máy laptop của mình."
+        },
+        {
+          "role": "user",
+          "content": "Mã máy là LT-404."
+        },
+        {
+          "role": "user",
+          "content": "Tiến hành chẩn đoán mạng nhé."
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "inspect_device",
+            "args": {
+              "asset_id": "LT-404",
+              "check": "network"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_fill_asset",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "G10_multiturn_ambiguous_enum",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tạo ticket lỗi sso."
+        },
+        {
+          "role": "user",
+          "content": "Priority là gấp lắm."
+        },
+        {
+          "role": "user",
+          "content": "Hỏi mình để xác nhận priority đi."
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "choice",
+              "options": [
+                "low",
+                "medium",
+                "high",
+                "critical"
+              ]
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_clarify_enum",
+        "difficulty": "hard"
+      }
+    }
+  ]
 }
