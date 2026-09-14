@@ -1,7 +1,273 @@
 {
   "dataset_id": "day04_v3_helpdesk_group",
   "dataset_role": "group",
-  "description": "Template intentionally left empty. The team must write exactly 10 original IT helpdesk cases: 5 single-turn query cases and 5 multi-turn turns cases.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "10 original IT helpdesk cases (5 single, 5 multi).",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "Group_Single_01",
+      "phase": "B",
+      "suite": "group",
+      "query": "Lỗi không vào được email công ty, hãy kiểm tra hệ thống giúp tôi.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_service_status",
+            "args": {
+              "service": "email",
+              "environment": "production"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "single_service",
+        "what_it_tests": "Route to check_service_status for email"
+      }
+    },
+    {
+      "id": "Group_Single_02",
+      "phase": "B",
+      "suite": "group",
+      "query": "Máy in không hoạt động, chẩn đoán giúp tôi nhé.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify"
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "missing_asset",
+        "what_it_tests": "Must ask for asset ID using clarify"
+      }
+    },
+    {
+      "id": "Group_Single_03",
+      "phase": "B",
+      "suite": "group",
+      "query": "Laptop Dell XPS 15 của tôi dùng RAM loại nào vậy?",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "search_device_info",
+            "args": {
+              "manufacturer": "Dell",
+              "model": "XPS 15",
+              "query_type": "specs"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "external_info",
+        "what_it_tests": "Route to search_device_info with correct arguments"
+      }
+    },
+    {
+      "id": "Group_Single_04",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tạo ticket hỗ trợ lỗi màn hình xanh giúp tôi.",
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify"
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "unconfirmed_ticket",
+        "what_it_tests": "Must ask for explicit confirmation before creating ticket"
+      }
+    },
+    {
+      "id": "Group_Single_05",
+      "phase": "B",
+      "suite": "group",
+      "query": "Mình muốn mua game Steam trên máy tính công ty thì làm sao?",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "skill": "out_of_scope",
+        "what_it_tests": "Reject out of scope requests without tools"
+      }
+    },
+    {
+      "id": "Group_Multi_01",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Mạng wifi văn phòng bị rớt, tạo ticket báo sự cố giúp tôi."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn có chắc chắn muốn tạo ticket báo lỗi mạng wifi không?"
+        },
+        {
+          "role": "user",
+          "content": "Có, tạo đi."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "create_ticket",
+            "args": {
+              "summary": "Mạng wifi văn phòng bị rớt",
+              "priority": "medium"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multi_ticket_confirmed",
+        "what_it_tests": "Create ticket after user confirms in multi-turn"
+      }
+    },
+    {
+      "id": "Group_Multi_02",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm thông tin liên lạc của nhân viên E9988."
+        },
+        {
+          "role": "assistant",
+          "content": "Tôi cần xác nhận mã nhân viên là E9988, đúng không?"
+        },
+        {
+          "role": "user",
+          "content": "Đúng rồi, tra cứu cho tôi."
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup_user",
+            "args": {
+              "employee_id": "E9988"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multi_context_carry",
+        "what_it_tests": "Lookup user when ID is confirmed in multi-turn"
+      }
+    },
+    {
+      "id": "Group_Multi_03",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Kiểm tra lỗi máy chiếu PRJ-123 giúp tôi."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn muốn kiểm tra lỗi gì?"
+        },
+        {
+          "role": "user",
+          "content": "À không, ý tôi là kiểm tra loa phòng họp SPK-456."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "inspect_device",
+            "args": {
+              "asset_id": "SPK-456"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multi_intent_correction",
+        "what_it_tests": "Update intent correctly based on user correction"
+      }
+    },
+    {
+      "id": "Group_Multi_04",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tôi cần cấp quyền truy cập thư mục."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn có muốn tôi tạo ticket yêu cầu cấp quyền không?"
+        },
+        {
+          "role": "user",
+          "content": "Thôi tôi không cần nữa, xin cảm ơn."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "skill": "multi_cancellation",
+        "what_it_tests": "Cancel action based on user feedback"
+      }
+    },
+    {
+      "id": "Group_Multi_05",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tôi muốn biết tình trạng VPN và xin hướng dẫn cài đặt nó."
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "check_service_status",
+            "args": {
+              "service": "vpn",
+              "environment": "production"
+            }
+          },
+          {
+            "name": "search_kb",
+            "args": {
+              "query": "hướng dẫn cài đặt VPN"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multi_parallel_actions",
+        "what_it_tests": "Execute check_service_status and search_kb in parallel"
+      }
+    }
+  ]
 }

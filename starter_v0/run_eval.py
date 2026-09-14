@@ -289,26 +289,35 @@ def main() -> None:
     for case in cases:
         print(f"Running {case['id']}...", flush=True)
         agent = HelpdeskAgent(provider, system_prompt=system_prompt, tools=openai_tools, model=args.model)
-        try:
-            tool_choice = None if case["expect"].get("no_tool") else "required"
-            run = agent.run(case_messages(case), tool_choice=tool_choice)
-            calls = [{"name": call.name, "args": call.args} for call in run.tool_calls]
-            result = evaluate_phase_b(case, calls, run.text)
-            tool_results = run.tool_results
-        except Exception as exc:
-            calls = []
-            tool_results = []
-            result = {
-                "passed": False,
-                "failure_type": "provider_error",
-                "case_failure_type": case.get("failure_type"),
-                "observed_mismatch": "provider_error",
-                "failures": [f"{type(exc).__name__}: {str(exc)}"],
-                "actual_tool_calls": [],
-                "actual_text": None,
-                "routing_correct": False,
-                "args_correct": False,
-            }
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                tool_choice = None if case["expect"].get("no_tool") else "required"
+                run = agent.run(case_messages(case), tool_choice=tool_choice)
+                calls = [{"name": call.name, "args": call.args} for call in run.tool_calls]
+                result = evaluate_phase_b(case, calls, run.text)
+                tool_results = run.tool_results
+                break # success
+            except Exception as exc:
+                if "429" in str(exc) and attempt < max_retries - 1:
+                    print(f"Rate limited (429), retrying in 20s... (Attempt {attempt + 1}/{max_retries})")
+                    import time
+                    time.sleep(20)
+                    continue
+                calls = []
+                tool_results = []
+                result = {
+                    "passed": False,
+                    "failure_type": "provider_error",
+                    "case_failure_type": case.get("failure_type"),
+                    "observed_mismatch": "provider_error",
+                    "failures": [f"{type(exc).__name__}: {str(exc)}"],
+                    "actual_tool_calls": [],
+                    "actual_text": None,
+                    "routing_correct": False,
+                    "args_correct": False,
+                }
+                break
         results.append({
             "id": case["id"],
             "phase": case["phase"],

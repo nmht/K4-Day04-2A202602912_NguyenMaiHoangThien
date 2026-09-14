@@ -1,0 +1,30 @@
+{
+  "dataset_id": "day04_v3_helpdesk_bonus",
+  "dataset_role": "bonus",
+  "description": "Eval for bonus tool request_hardware",
+  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "missing_info"],
+  "cases": [
+    {
+      "id": "Bonus_01",
+      "phase": "B",
+      "suite": "bonus",
+      "query": "Tôi là E1234, cần xin cấp một cái bàn phím mới do cái cũ bị hỏng.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "request_hardware",
+            "args": {
+              "employee_id": "E1234",
+              "hardware_type": "keyboard"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "bonus_tool",
+        "what_it_tests": "Check if model routes to the new bonus tool request_hardware"
+      }
+    }
+  ]
+}
