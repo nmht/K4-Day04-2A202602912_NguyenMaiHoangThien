@@ -65,7 +65,9 @@ total_cases`, và tool result error đã được review thủ công.
 | H03\_kb\_routing            | wrong\_tool     | search\_kb(query="...") | Thiếu biến `category` bắt buộc                                             | Sửa `tools.yaml`, biến `category` thành required.                               |
 | M05\_ticket\_confirmation   | wrong\_boundary | \[] (Không gọi)         | Model viết câu hỏi xin phép vào trường `reply` của JSON thay vì dùng Tool. | Cảnh báo gay gắt trong prompt: CẤM TỰ Ý ĐẶT CÂU HỎI TRONG JSON, PHẢI DÙNG TOOL. |
 | H19\_ambiguous\_environment | missing\_info   | check\_service\_status  | User nói "demo", model tự chẩn đoán thay vì hỏi.                           | Thêm luật không được đoán Enum, bắt buộc gọi `clarify(choice)`.                 |
-| (Toàn bộ)                   | provider\_error | error 429               | Gửi 30 request/phút vượt quá limit free tier.                              | Thêm `time.sleep(4)` vào `gemini_provider.py`.                                  |
+|                             |                 |                         |                                                                            |                                                                                 |
+
+
 
 ## B3. Team eval cases
 
