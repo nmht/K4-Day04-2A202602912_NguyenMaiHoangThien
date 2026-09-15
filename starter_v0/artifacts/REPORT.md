@@ -3,8 +3,12 @@
 ## Team
 
 - Team: Điền tên nhóm.
-- Members: Bùi Hoàng Anh — MSSV 2A202602697.
-- Provider/model: Gemini `gemini-3.1-flash-lite`.
+- Members: Bùi Hoàng Anh — MSSV 2A202602697 , Nguyễn Tiến Đạt - 2A202602606 , Nguyễn Mai Hoàng Thiện - 2A202602912&#x9;
+- Provi#x9;der/model: Gemini `gemini-3.1-flash-lite
+
+
+
+`.
 
 # PHẦN A — Giới thiệu agent
 
